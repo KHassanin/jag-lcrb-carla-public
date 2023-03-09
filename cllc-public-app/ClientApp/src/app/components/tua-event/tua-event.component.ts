@@ -425,83 +425,83 @@ export class TuaEventComponent extends FormBase implements OnInit {
     //Validate Timing 
     if (this.timeForms.length > 0) {
       var hoursOfServiceList = this.licence.endorsements[0].hoursOfServiceList;
-      if (hoursOfServiceList == null || hoursOfServiceList == undefined || hoursOfServiceList.length==0){
-        this.validationMessages.push('Temporary Use Area Endorsement does not contains hours of service');
-      }
-      //Check if different timings
-      if (this.timeForms.length > 1) {
-        for (var i = 0; i < this.timeForms.length; i++) {
-          var startDate = this.timeForms.value[i].date;
-          var dayOfWeek = startDate.getDay();
-          var hoursOfService = hoursOfServiceList.filter(k => k.dayOfWeek == dayOfWeek)[0];
-          if (hoursOfService == null || hoursOfService == undefined) {
-            this.validationMessages.push('Service hours should be with license service hours');
-            break;
-          } else {
-            var liquorStartTimeHour = this.timeForms.value[i].startTime.hour;
-            var liquorStartTimeMinute = this.timeForms.value[i].startTime.minute;
-            var liquorEndTimeHour = this.timeForms.value[i].endTime.hour;
-            var liquorEndTimeMinute = this.timeForms.value[i].endTime.minute;
-            if (hoursOfService.endTimeHour < hoursOfService.startTimeHour) {
-              hoursOfService.endTimeHour += 24;
-            }
-            if (liquorEndTimeHour < liquorStartTimeHour) {
-              liquorEndTimeHour += 24;
-            }
-            if (liquorStartTimeHour < hoursOfService.startTimeHour ||
-              (liquorStartTimeHour == hoursOfService.startTimeHour
-                && liquorStartTimeMinute < hoursOfService.startTimeMinute)) {
+      if (hoursOfServiceList != null && hoursOfServiceList != undefined && hoursOfServiceList.length > 0) {
+
+        //Check if different timings
+        if (this.timeForms.length > 1) {
+          for (var i = 0; i < this.timeForms.length; i++) {
+            var startDate = this.timeForms.value[i].date;
+            var dayOfWeek = startDate.getDay();
+            var hoursOfService = hoursOfServiceList.filter(k => k.dayOfWeek == dayOfWeek)[0];
+            if (hoursOfService == null || hoursOfService == undefined) {
               this.validationMessages.push('Service hours should be with license service hours');
               break;
-            }
-            if (liquorEndTimeHour > hoursOfService.endTimeHour ||
-              (liquorEndTimeHour == hoursOfService.endTimeHour
-                && liquorEndTimeMinute > hoursOfService.endTimeMinute)) {
-              this.validationMessages.push('Service hours should be with license service hours');
-              break;
+            } else {
+              var liquorStartTimeHour = this.timeForms.value[i].startTime.hour;
+              var liquorStartTimeMinute = this.timeForms.value[i].startTime.minute;
+              var liquorEndTimeHour = this.timeForms.value[i].endTime.hour;
+              var liquorEndTimeMinute = this.timeForms.value[i].endTime.minute;
+              if (hoursOfService.endTimeHour < hoursOfService.startTimeHour) {
+                hoursOfService.endTimeHour += 24;
+              }
+              if (liquorEndTimeHour < liquorStartTimeHour) {
+                liquorEndTimeHour += 24;
+              }
+              if (liquorStartTimeHour < hoursOfService.startTimeHour ||
+                (liquorStartTimeHour == hoursOfService.startTimeHour
+                  && liquorStartTimeMinute < hoursOfService.startTimeMinute)) {
+                this.validationMessages.push('Service hours should be with license service hours');
+                break;
+              }
+              if (liquorEndTimeHour > hoursOfService.endTimeHour ||
+                (liquorEndTimeHour == hoursOfService.endTimeHour
+                  && liquorEndTimeMinute > hoursOfService.endTimeMinute)) {
+                this.validationMessages.push('Service hours should be with license service hours');
+                break;
+              }
+
             }
 
           }
 
         }
+        else {
+          //Every day at the same time
+          var startDate = this.form.value.startDate;
+          var dayOfWeek = startDate.getDay();
+          var existedHoursOfService = hoursOfServiceList.filter(k => k.dayOfWeek == dayOfWeek)[0];
+          var hoursOfService = new HoursOfService();
+          hoursOfService.dayOfWeek = existedHoursOfService.dayOfWeek;
+          hoursOfService.startTimeHour = existedHoursOfService.startTimeHour;
+          hoursOfService.startTimeMinute = existedHoursOfService.startTimeMinute;
+          hoursOfService.endTimeHour = existedHoursOfService.endTimeHour;
+          hoursOfService.endTimeMinute = existedHoursOfService.endTimeMinute;
 
-      }
-      else {
-        //Every day at the same time
-        var startDate = this.form.value.startDate;
-        var dayOfWeek = startDate.getDay();
-        var existedHoursOfService = hoursOfServiceList.filter(k => k.dayOfWeek == dayOfWeek)[0];
-        var hoursOfService = new HoursOfService();
-        hoursOfService.dayOfWeek = existedHoursOfService.dayOfWeek;
-        hoursOfService.startTimeHour = existedHoursOfService.startTimeHour;
-        hoursOfService.startTimeMinute = existedHoursOfService.startTimeMinute;
-        hoursOfService.endTimeHour = existedHoursOfService.endTimeHour;
-        hoursOfService.endTimeMinute = existedHoursOfService.endTimeMinute;
+          var liquorStartTimeHour = this.timeForms.value[0].startTime.hour;
+          var liquorStartTimeMinute = this.timeForms.value[0].startTime.minute;
+          var liquorEndTimeHour = this.timeForms.value[0].endTime.hour;
+          var liquorEndTimeMinute = this.timeForms.value[0].endTime.minute;
+          if (hoursOfService.endTimeHour < hoursOfService.startTimeHour) {
+            hoursOfService.endTimeHour += 24;
+          }
+          if (liquorEndTimeHour < liquorStartTimeHour) {
+            liquorEndTimeHour += 24;
+          }
 
-        var liquorStartTimeHour = this.timeForms.value[0].startTime.hour;
-        var liquorStartTimeMinute = this.timeForms.value[0].startTime.minute;
-        var liquorEndTimeHour = this.timeForms.value[0].endTime.hour;
-        var liquorEndTimeMinute = this.timeForms.value[0].endTime.minute;
-        if (hoursOfService.endTimeHour < hoursOfService.startTimeHour) {
-          hoursOfService.endTimeHour += 24;
-        }
-        if (liquorEndTimeHour < liquorStartTimeHour) {
-          liquorEndTimeHour += 24;
-        }
-      
-        if (liquorStartTimeHour < hoursOfService.startTimeHour ||
-          (liquorStartTimeHour == hoursOfService.startTimeHour
-            && liquorStartTimeMinute < hoursOfService.startTimeMinute)) {
-          this.validationMessages.push('Service hours should be with license service hours');
-        }
-        if (liquorEndTimeHour > hoursOfService.endTimeHour ||
-          (liquorEndTimeHour == hoursOfService.endTimeHour
-            && liquorEndTimeMinute > hoursOfService.endTimeMinute)) {
-          this.validationMessages.push('Service hours should be with license service hours');
+          if (liquorStartTimeHour < hoursOfService.startTimeHour ||
+            (liquorStartTimeHour == hoursOfService.startTimeHour
+              && liquorStartTimeMinute < hoursOfService.startTimeMinute)) {
+            this.validationMessages.push('Service hours should be with license service hours');
+          }
+          if (liquorEndTimeHour > hoursOfService.endTimeHour ||
+            (liquorEndTimeHour == hoursOfService.endTimeHour
+              && liquorEndTimeMinute > hoursOfService.endTimeMinute)) {
+            this.validationMessages.push('Service hours should be with license service hours');
+          }
         }
       }
     }
-  
+
 
 
 
