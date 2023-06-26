@@ -25,7 +25,7 @@ namespace Gov.Lclb.Cllb.OrgbookService
             {
                 _dynamics = DynamicsSetupUtil.SetupDynamics(Configuration);
             }
-            _orgbookClient = new OrgBookClient(new HttpClient(), Configuration["ORGBOOK_URL"]);
+            _orgbookClient = new OrgBookClient(configuration,new HttpClient(), Configuration["ORGBOOK_URL"]);
             _logger = loggerFactory.CreateLogger("OrgbookController");
         }
 
@@ -53,7 +53,10 @@ namespace Gov.Lclb.Cllb.OrgbookService
             {
                 string licenceGuid = Utils.ParseGuid(message.LicenceId);
                 var licence = _dynamics.GetLicenceByIdWithChildren(licenceGuid);
-                VonAgentClient _vonAgentClient = new VonAgentClient(new HttpClient(), _logger, schema, schemaVersion, Configuration["AGENT_URL"]);
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Add("X_API_KEY", Configuration["X_API_KEY"]);
+                VonAgentClient _vonAgentClient = new VonAgentClient(client, _logger, schema, schemaVersion, Configuration["AGENT_URL"], Configuration["X_API_KEY"]);
+                
                 bool issueSuccess = await _vonAgentClient.CreateLicenceCredential(licence, message.RegistrationId);
 
                 if(issueSuccess)

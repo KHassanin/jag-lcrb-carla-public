@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -14,11 +15,13 @@ namespace Gov.Lclb.Cllb.OrgbookService
         public readonly string ORGBOOK_API_SCHEMA_ENDPOINT = "/api/v2/schema";
         public readonly string ORGBOOK_API_CREDENTIAL_ENDPOINT = "/api/v2/search/credential/topic";
         public readonly string ORGBOOK_API_AUTOCOMPLETE_ENDPOINT = "/api/v2/search/autocomplete";
-        
-        public OrgBookClient(HttpClient client, string BASE_URL)
+        readonly IConfiguration _configuration;
+        public OrgBookClient(IConfiguration configuration, HttpClient client, string BASE_URL)
         {
+            _configuration = configuration;
             ORGBOOK_BASE_URL = BASE_URL;
             Client = client;
+            Client.DefaultRequestHeaders.Add("X_API_KEY", _configuration["X_API_KEY"]);
         }
 
         public async Task<int?> GetTopicId(string registrationId)

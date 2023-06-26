@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Gov.Lclb.Cllb.Interfaces.Models;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -16,13 +17,16 @@ namespace Gov.Lclb.Cllb.OrgbookService
         readonly string _schemaVersion;
         readonly string AGENT_URL;
         readonly string ISSUE_URL = "issue-credential";
-        public VonAgentClient(HttpClient client, ILogger logger, string schema, string schemaVersion, string agentURL)
+        readonly string _apiKey;
+
+        public VonAgentClient(HttpClient client, ILogger logger, string schema, string schemaVersion, string agentURL,string apiKey)
         {
             Client = client;
             _logger = logger;
             _schema = schema;
             _schemaVersion = schemaVersion;
             AGENT_URL = agentURL;
+            _apiKey = apiKey;
         }
 
         public async Task<bool> CreateLicenceCredential(MicrosoftDynamicsCRMadoxioLicences licence, string registrationId)
@@ -67,12 +71,14 @@ namespace Gov.Lclb.Cllb.OrgbookService
                 // can't use PostAsJson in dotnet core
 
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, AGENT_URL + ISSUE_URL);
-
+                request.Headers.Add("X_API_KEY", _apiKey);  
                 string json = JsonConvert.SerializeObject(new List<Credential>() { credential });
 
                 request.Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
                 HttpClient http = new HttpClient();
+                http.DefaultRequestHeaders.Add("X_API_KEY", _apiKey);
+                http.BaseAddress=new Uri(AGENT_URL + ISSUE_URL);
                 HttpResponseMessage response = await http.SendAsync(request);                
 
                 if (!response.IsSuccessStatusCode)
