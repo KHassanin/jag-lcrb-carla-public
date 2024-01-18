@@ -73,7 +73,7 @@ export class LicenceRowComponent extends FormBase implements OnInit {
   renewalStarted = false;
   requestStarted = false;
   requestID: number=-1;
-
+  collapsible = true;
   @Input()
   available: boolean;
   @Input()
@@ -81,7 +81,13 @@ export class LicenceRowComponent extends FormBase implements OnInit {
   @Input()
   licences: ApplicationLicenseSummary[];
   isOutstandingPriorBalanceInvoiceDue: boolean;
-  hasOutstandingPriorBalance: boolean; 
+  hasOutstandingPriorBalance: boolean;
+  permanentChangeEstablishment = ['Establishment Name Change Application', 'Request Relocation'];
+  permanentChangeLicence = ['Catering Endorsement Application', 'Change to Hours of Liquor Service (after Midnight)', 'Change to Hours of Liquor Service(9AM to Midnight)',
+    'Application to Allow Family Food Service', 'Live Theatre Request For Liquor Service', 'Apply to Allow Minors in Recreation Facilities',
+    'Patron Participation Entertainment Endorsement','Request of Change in Terms and Conditions/Request for Discretion'];
+  //permanentChangeEstablishment = ['Establishment Name', 'Relocation'];
+  //permanentChangeEstablishment = ['Establishment Name', 'Relocation'];
   constructor(
     private licenceDataService: LicenseDataService,
     private router: Router,
@@ -128,6 +134,13 @@ export class LicenceRowComponent extends FormBase implements OnInit {
           }
         });
       });
+    
+  }
+  getAllowedActionsPermanentChangeEstablishment(applicationLicenseSummary: ApplicationLicenseSummary) {
+    var allowedActions = applicationLicenseSummary.allowedActions.filter(k => this.permanentChangeEstablishment.includes(k.actionText));
+   //applicationLicenseSummary.allowedActions = applicationLicenseSummary.allowedActions.filter(k => !this.permanentChangeEstablishment.includes(k.actionText));
+
+    return allowedActions;
   }
 
   updateEmail(licenceId: string, establishmentId: string, event: any) {
@@ -686,5 +699,8 @@ export class LicenceRowComponent extends FormBase implements OnInit {
 
   licenceTypeHasTerms(licenceType: string) {
     return licenceType && licenceType.indexOf("Cannabis") < 0;
+  }
+  showAndHigh() {
+    this.collapsible = !this.collapsible;
   }
 }

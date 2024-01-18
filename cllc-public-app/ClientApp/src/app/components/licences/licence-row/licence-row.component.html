@@ -278,137 +278,199 @@
 
                         <!-- REQUEST CHANGES column -->
                         <td style="background-color: #E1E8F2; padding: 10px;">
-                            <!-- 3rd Party Operators cannot submit  changes -->
-                            <div *ngIf="!item.isOperated">
-                                <div *ngIf="showLicenceTransferAction(item)">
-                                    <p>
-                                      <a [routerLink]="[ '/ownership-transfer/' + item.licenseId]">
-                                        <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                                (click)="startRequest(5001)" [disabled]="requestStarted && requestID==5001">
-                                          <span>
-                                            <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>
-                                            Transfer licence <span *ngIf="licenceType === 'Cannabis Retail Store'||licenceType === 'S119 CRS Authorization'||licenceType === 'Producer Retail Store'"> or Authorization  </span>
-                                          </span>
-                                          <mat-progress-bar *ngIf="requestStarted && requestID==5001" mode="indeterminate"></mat-progress-bar>
-                                        </button>
-                                      </a>
-                                    </p>
-                                </div>
-                                <!-- if there is a third party application in progress, we don't show the ability to submit a new application-->
-                                <div *ngIf="showAddOrChangeThirdPartyOperator(item)">
-                                    <p>
-                                      <a [routerLink]="[ '/third-party-operator/' + item.licenseId]">
-                                        <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                                (click)="startRequest(5011)" [disabled]="requestStarted && requestID==5011">
-                                          <span>
-                                            <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>Add or
-                                            Change a Third Party Operator
-                                          </span>
-                                          <mat-progress-bar *ngIf="requestStarted && requestID==5011" mode="indeterminate"></mat-progress-bar>
-                                        </button>                                    
-                                      </a>
-                                    </p>
-                                </div>
+                          <!-- 3rd Party Operators cannot submit  changes -->
+                          <div *ngIf="!item.isOperated">
 
-                                <div *ngIf="showTiedHouseExemption(item)">
-                                  <p>
-                                    <a [routerLink]="[ '/tied-house-exemption/' + item.licenseId]">
-                                  
+                            <mat-expansion-panel [expanded]="false" class="mat-elevation-z1">
+                              <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                  Transfer
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                  Click to expand or collapse
+                                </mat-panel-description>
+                              </mat-expansion-panel-header>
+                              <div *ngIf="showLicenceTransferAction(item)">
+                                <p>
+                                  <a [routerLink]="[ '/ownership-transfer/' + item.licenseId]">
+                                    <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                            (click)="startRequest(5001)" [disabled]="requestStarted && requestID==5001">
+                                      <span>
+                                        <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>
+                                        Transfer licence <span *ngIf="licenceType === 'Cannabis Retail Store'||licenceType === 'S119 CRS Authorization'||licenceType === 'Producer Retail Store'"> or Authorization  </span>
+                                      </span>
+                                      <mat-progress-bar *ngIf="requestStarted && requestID==5001" mode="indeterminate"></mat-progress-bar>
+                                    </button>
+                                  </a>
+                                </p>
+                              </div>
+                              <!-- if there is a third party application in progress, we don't show the ability to submit a new application-->
+                              <div *ngIf="showAddOrChangeThirdPartyOperator(item)">
+                                <p>
+                                  <a [routerLink]="[ '/third-party-operator/' + item.licenseId]">
+                                    <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                            (click)="startRequest(5011)" [disabled]="requestStarted && requestID==5011">
+                                      <span>
+                                        <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>Add or
+                                        Change a Third Party Operator
+                                      </span>
+                                      <mat-progress-bar *ngIf="requestStarted && requestID==5011" mode="indeterminate"></mat-progress-bar>
+                                    </button>
+                                  </a>
+                                </p>
+                              </div>
+
+                            </mat-expansion-panel>
+
+                            <div *ngIf="showTiedHouseExemption(item)">
+                              <p>
+                                <a [routerLink]="[ '/tied-house-exemption/' + item.licenseId]">
+
+                                  <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                          (click)="startRequest(5021)" [disabled]="requestStarted && requestID==5021">
+                                    <span>
+                                      <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>
+                                      Invitation for Tied House Exemption
+                                    </span>
+                                    <mat-progress-bar *ngIf="requestStarted && requestID==5021" mode="indeterminate"></mat-progress-bar>
+                                  </button>
+                                </a>
+                              </p>
+                            </div>
+                            
+                            <ng-container *ngIf="isActive(item) && actionsVisible(item)">
+                              <mat-expansion-panel [expanded]="false" class="mat-elevation-z1">
+                                <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                    Permanent Change – Establishment
+                                  </mat-panel-title>
+                                  <mat-panel-description>
+                                    Click to expand or collapse
+                                  </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <p *ngFor="let action of getAllowedActionsPermanentChangeEstablishment(item); let requestActionID = index;">
+                                  <ng-container *ngIf="actionVisible(item, action.id)">
+                                    <a href="javascript:void(0);" (click)="doAction(item,action.name)">
                                       <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                              (click)="startRequest(5021)" [disabled]="requestStarted && requestID==5021">
+                                              (click)="startRequest(requestActionID)" [disabled]="requestStarted && requestID==requestActionID">
                                         <span>
-                                          <fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>
-                                          Invitation for Tied House Exemption
+                                          <fa-icon [icon]="faBolt" style="margin-right: 10px;"></fa-icon>
+                                          {{action?.actionText}}
                                         </span>
-                                        <mat-progress-bar *ngIf="requestStarted && requestID==5021" mode="indeterminate"></mat-progress-bar>
+                                        <mat-progress-bar *ngIf="requestStarted && requestID==requestActionID" mode="indeterminate"></mat-progress-bar>
                                       </button>
                                     </a>
-                                  </p>
-                              </div>
-                                <ng-container *ngIf="isActive(item) && actionsVisible(item)">
-                                    <p *ngFor="let action of item.allowedActions; let requestActionID = index;">
-                                        <ng-container *ngIf="actionVisible(item, action.id)">
-                                          <a href="javascript:void(0);" (click)="doAction(item,action.name)">                                        
-                                            <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                                    (click)="startRequest(requestActionID)" [disabled]="requestStarted && requestID==requestActionID">
-                                              <span>
-                                                <fa-icon [icon]="faBolt" style="margin-right: 10px;"></fa-icon>
-                                                {{action?.actionText}}
-                                              </span>
-                                              <mat-progress-bar *ngIf="requestStarted && requestID==requestActionID" mode="indeterminate"></mat-progress-bar>
-                                            </button>
-                                          </a>
-                                        </ng-container>
-                                    </p>
+                                  </ng-container>
+                                </p>
+                              </mat-expansion-panel>
+                              <mat-expansion-panel [expanded]="false" class="mat-elevation-z1">
+                                <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                    Permanent Change – Establishment
+                                  </mat-panel-title>
+                                  <mat-panel-description>
+                                    Click to expand or collapse
+                                  </mat-panel-description>
+                                </mat-expansion-panel-header>
+                                <p *ngFor="let action of getAllowedActionsPermanentChangeLicence(item); let requestActionID = index;">
+                                  <ng-container *ngIf="actionVisible(item, action.id)">
+                                    <a href="javascript:void(0);" (click)="doAction(item,action.name)">
+                                      <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                              (click)="startRequest(requestActionID)" [disabled]="requestStarted && requestID==requestActionID">
+                                        <span>
+                                          <fa-icon [icon]="faBolt" style="margin-right: 10px;"></fa-icon>
+                                          {{action?.actionText}}
+                                        </span>
+                                        <mat-progress-bar *ngIf="requestStarted && requestID==requestActionID" mode="indeterminate"></mat-progress-bar>
+                                      </button>
+                                    </a>
+                                  </ng-container>
+                                </p>
+                              </mat-expansion-panel>
+                              -------------------------
+                              <p *ngFor="let action of item.allowedActions; let requestActionID = index;">
+                                <ng-container *ngIf="actionVisible(item, action.id)">
+                                  <a href="javascript:void(0);" (click)="doAction(item,action.name)">
+                                    <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                            (click)="startRequest(requestActionID)" [disabled]="requestStarted && requestID==requestActionID">
+                                      <span>
+                                        <fa-icon [icon]="faBolt" style="margin-right: 10px;"></fa-icon>
+                                        {{action?.actionText}}
+                                      </span>
+                                      <mat-progress-bar *ngIf="requestStarted && requestID==requestActionID" mode="indeterminate"></mat-progress-bar>
+                                    </button>
+                                  </a>
                                 </ng-container>
-                                <div *ngIf="!isCancelled(item)">
-                                    <!--div *ngIf="isAboutToExpire(item) && item.autoRenewal" class="licence-expired"
-                                        style="text-align: center;">
-                                        <a href="javascript: void(0);" (click)="startRenewal(item)" class="missing">
-                                            <strong>Attention</strong>: This Licence will Expire Soon<br>Please
+                              </p>
+                            </ng-container>
+                            <div *ngIf="!isCancelled(item)">
+                              <!--div *ngIf="isAboutToExpire(item) && item.autoRenewal" class="licence-expired"
+        style="text-align: center;">
+        <a href="javascript: void(0);" (click)="startRenewal(item)" class="missing">
+            <strong>Attention</strong>: This Licence will Expire Soon<br>Please
 
-                                            Renew.</a>
-                                    </div-->
-                                  <div *ngIf="isExpired(item) && isRecentlyExpired(item) && item.autoRenewal"
-                                       class="licence-expired" style="text-align: center;">
-                                    <span *ngIf="isOutstandingPriorBalanceInvoiceDue">
-                                      <div style="color: #f44336;"><fa-icon [icon]="faExclamationTriangle" style="margin-right: 10px;"></fa-icon> Attention: you have an outstanding prior balance invoice(s); please return to the Dashboard for details and to make payment</div>
-                                      <a routerLink="/dashboard">
-                                        Return to Dashboard
-                                      </a>
+            Renew.</a>
+    </div-->
+                              <div *ngIf="isExpired(item) && isRecentlyExpired(item) && item.autoRenewal"
+                                   class="licence-expired" style="text-align: center;">
+                                <span *ngIf="isOutstandingPriorBalanceInvoiceDue">
+                                  <div style="color: #f44336;"><fa-icon [icon]="faExclamationTriangle" style="margin-right: 10px;"></fa-icon> Attention: you have an outstanding prior balance invoice(s); please return to the Dashboard for details and to make payment</div>
+                                  <a routerLink="/dashboard">
+                                    Return to Dashboard
+                                  </a>
+                                </span>
+                                <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && !isExpiredOverOneYear(item)">
+                                  <strong>Attention</strong>: This Licence has Expired<br>
+                                  <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                          (click)="startRenewal(item)" [disabled]="renewalStarted">
+                                    <span>
+                                      Please Renew
                                     </span>
-                                    <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && !isExpiredOverOneYear(item)">
-                                      <strong>Attention</strong>: This Licence has Expired<br>
-                                      <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                              (click)="startRenewal(item)" [disabled]="renewalStarted">
-                                        <span>
-                                          Please Renew
-                                        </span>
-                                        <mat-progress-bar *ngIf="renewalStarted" mode="indeterminate"></mat-progress-bar>
-                                      </button>
+                                    <mat-progress-bar *ngIf="renewalStarted" mode="indeterminate"></mat-progress-bar>
+                                  </button>
+                                </span>
+                                <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && isExpiredOverOneYear(item)">
+                                  <a href="javascript: void(0);" class="missing" disabled style="pointer-events:none;">
+                                    <strong>Attention</strong>: Unable to Renew.
+                                  </a>
+                                </span>
+                              </div>
+                              <div *ngIf="isExpired(item) && !isRecentlyExpired(item) && item.autoRenewal"
+                                   class="licence-expired" style="text-align: center;">
+                                <span *ngIf="isOutstandingPriorBalanceInvoiceDue">
+                                  <button [disabled]="true" class="missing"
+                                          [title]="'Attention: you have an outstanding prior balance invoice(s); please return to the Dashboard for details and to make payment'">
+                                    <span>
+                                      <strong>Attention</strong>: This licence has Expired<br>Please Reinstate.
                                     </span>
-                                    <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && isExpiredOverOneYear(item)">
-                                      <a href="javascript: void(0);" class="missing" disabled style="pointer-events:none;">
-                                        <strong>Attention</strong>: Unable to Renew.
-                                      </a>
+                                  </button>
+                                </span>
+                                <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && !isExpiredOverOneYear(item)">
+                                  <strong>Attention</strong>: This licence has Expired<br>
+                                  <button mat-raised-button color="secondary" style="margin-right: 10px;"
+                                          (click)="startRenewal(item)" [disabled]="renewalStarted">
+                                    <span>
+                                      Please Reinstate
                                     </span>
-                                  </div>
-                                  <div *ngIf="isExpired(item) && !isRecentlyExpired(item) && item.autoRenewal"
-                                       class="licence-expired" style="text-align: center;">
-                                    <span *ngIf="isOutstandingPriorBalanceInvoiceDue">
-                                      <button [disabled]="true" class="missing"
-                                              [title]="'Attention: you have an outstanding prior balance invoice(s); please return to the Dashboard for details and to make payment'">
-                                        <span>
-                                          <strong>Attention</strong>: This licence has Expired<br>Please Reinstate.
-                                        </span>
-                                      </button>
-                                    </span>
-                                    <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && !isExpiredOverOneYear(item)">
-                                      <strong>Attention</strong>: This licence has Expired<br>
-                                      <button mat-raised-button color="secondary" style="margin-right: 10px;"
-                                              (click)="startRenewal(item)" [disabled]="renewalStarted">
-                                        <span>
-                                          Please Reinstate
-                                        </span>
-                                        <mat-progress-bar *ngIf="renewalStarted" mode="indeterminate"></mat-progress-bar>
-                                      </button>
-                                    </span>
-                                    <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && isExpiredOverOneYear(item)"  class="missing">                                  
-                                        <strong>Attention</strong>: Unable to Reinstate.                                     
-                                    </span>
-                                  </div>
+                                    <mat-progress-bar *ngIf="renewalStarted" mode="indeterminate"></mat-progress-bar>
+                                  </button>
+                                </span>
+                                <span *ngIf="!isOutstandingPriorBalanceInvoiceDue && isExpiredOverOneYear(item)" class="missing">
+                                  <strong>Attention</strong>: Unable to Reinstate.
+                                </span>
+                              </div>
 
 
-                                </div>
+                            </div>
 
-    <!-- <section
-           *ngIf="isActive(item) && item.transferRequested"
-           class="missing">
-      <a [routerLink]="[ '/ownership-cancel-transfer/' + item.licenseId]" class="missing">
-        <span><fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>Cancel Transfer</span>
-      </a>
-    </section> -->
-  </div>
+                            <!-- <section
+         *ngIf="isActive(item) && item.transferRequested"
+         class="missing">
+    <a [routerLink]="[ '/ownership-cancel-transfer/' + item.licenseId]" class="missing">
+      <span><fa-icon [icon]="faExchangeAlt" style="margin-right: 10px;"></fa-icon>Cancel Transfer</span>
+    </a>
+  </section> -->
+                          </div>
                           <section *ngIf="item.isOperated">
                             <i>
                               3rd-Party Operators cannot request changes to the
