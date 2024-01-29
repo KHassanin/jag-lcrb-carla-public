@@ -1203,7 +1203,7 @@
               <div *ngIf="formSection.visible" class="padded-section">
                 <!-- show it on the page-->
                 <!--section class="padded-section">
-                <!-- display the section name as a label-->
+        <!-- display the section name as a label-->
                 <label for="" *ngIf="formSection.name">{{formSection.name}}</label>
                 <!-- for each field on the section-->
                 <div *ngFor="let formField of formSection.fields">
@@ -1312,7 +1312,7 @@
           <div *ngIf="application?.applicationType?.name === ApplicationTypeNames.TemporaryChangetoaLiquorLicence_Other && application?.applicationType?.discretionRequest==true">
             <section>
               <div class="discretion-request">
-              
+
                 <h3 class="blue-header">Discretion Request</h3>
                 <div class="content-bottom">
 
@@ -1330,6 +1330,30 @@
                                      entityName="application" [useDocumentTypeForName]="true"
                                      (numberOfUploadedFiles)="uploadedPhotosOrRenderingsDocuments = $event" [entityId]="applicationId"
                                      [uploadHeader]="'TO UPLOAD DISCRETION REQUEST'">
+                  </app-file-uploader>
+
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div *ngIf="application?.applicationType?.name === ApplicationTypeNames.LicenceCancellationRequest">
+            <section>
+              <div class="cancellation-request">
+
+                <h3 class="blue-header">Cancellation Request</h3>
+                <div class="content-bottom">
+
+                  <p>
+                    Please upload a letter with a written signature requesting the cancellation of your licence. The letter must indicate the Licence Number, Establishment name, Effective date of cancellation, and be signed by an authorized signatory.
+                  </p>
+
+                  <app-file-uploader *ngIf="applicationId" documentType="Cancellation Request"
+                                     fileTypes="FILE MUST BE IN PDF FORMAT." [disableUploads]="isOpenedByLGForApproval || lGHasApproved()"
+                                     [enableFileDeletion]="!isOpenedByLGForApproval && !lGHasApproved()" [multipleFiles]="true"
+                                     entityName="application" [useDocumentTypeForName]="true"
+                                     (numberOfUploadedFiles)="uploadedPhotosOrRenderingsDocuments = $event" [entityId]="applicationId"
+                                     [uploadHeader]="'TO UPLOAD Cancellation Request'">
                   </app-file-uploader>
 
                 </div>
